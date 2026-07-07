@@ -1,0 +1,10 @@
+[
+  {"task_id": "t1", "prompt": "Explain the difference between TCP and UDP in networking."},
+  {"task_id": "t2", "prompt": "A shop sells an item for KES 1,200 after a 20% discount. It then raises the discounted price by 15%. What is the final price? Show your working."},
+  {"task_id": "t3", "prompt": "Classify the sentiment of the following review and justify briefly: 'The delivery was late and the packaging was damaged, but honestly the product itself exceeded my expectations.'"},
+  {"task_id": "t4", "prompt": "Summarise the following in exactly two sentences: The Great Barrier Reef is the world's largest coral reef system composed of over 2,900 individual reefs and 900 islands stretching for over 2,300 kilometres. It is located in the Coral Sea, off the coast of Queensland, Australia. The reef supports a wide diversity of life and was selected as a World Heritage Site in 1981."},
+  {"task_id": "t5", "prompt": "Extract and label all named entities (person, organisation, location, date) from: 'On 15 March 2024, Sarah Chen of Microsoft met officials from the Kenyan Ministry of Education in Nairobi.'"},
+  {"task_id": "t6", "prompt": "This Python function should return the factorial of n but crashes. Find the bug and provide the corrected implementation:\n\ndef factorial(n):\n    if n == 0:\n        return 1\n    return n * factorial(n)"},
+  {"task_id": "t7", "prompt": "Three friends — Amy, Ben and Carl — own a cat, a dog and a parrot (one each). Amy is allergic to fur. Ben's pet can talk. Who owns the dog? Explain your reasoning."},
+  {"task_id": "t8", "prompt": "Write a Python function `slugify(text: str) -> str` that lowercases text, replaces spaces and consecutive whitespace with single hyphens, and strips all characters that are not alphanumeric or hyphens."}
+]
