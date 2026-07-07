@@ -58,10 +58,14 @@ def classify(prompt: str) -> str:
 
 
 def pick_model(category: str, allowed: list[str]) -> str:
-    allowed_set = {m.strip() for m in allowed}
+    allowed_list = [m.strip() for m in allowed]
     for pref in MODEL_PREFS.get(category, []):
-        # match loosely: harness may publish IDs with provider prefixes
-        for a in allowed_set:
+        # exact ID (or exact tail after a provider prefix) first
+        for a in allowed_list:
+            if a == pref or a.endswith("/" + pref):
+                return a
+        # then loose substring as a fallback for renamed variants
+        for a in allowed_list:
             if pref in a:
                 return a
-    return allowed[0]  # fall back to the first allowed model
+    return allowed_list[0]  # fall back to the first allowed model
