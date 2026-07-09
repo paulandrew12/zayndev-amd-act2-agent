@@ -35,7 +35,7 @@ class FireworksClient:
     async def __aexit__(self, *exc):
         await self._client.aclose()
 
-    async def chat(self, model: str, messages: list[dict], max_tokens: int, retries: int = 2) -> ChatResult:
+    async def chat(self, model: str, messages: list[dict], max_tokens: int, retries: int = 1) -> ChatResult:
         payload = {
             "model": model,
             "messages": messages,

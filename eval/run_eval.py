@@ -73,6 +73,7 @@ async def run_live(tasks, allowed):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--live", action="store_true", help="call real models (needs .env key)")
+    ap.add_argument("--repeat", type=int, default=1, help="run the live eval N times and report accuracy/token spread (temp-0 is non-deterministic)")
     args = ap.parse_args()
 
     load_env()
@@ -94,27 +95,39 @@ def main():
         print("\n[live] No API key set in .env yet — paste it and retry.")
         return
 
-    outs = asyncio.run(run_live(tasks, allowed))
-    total_tokens = 0
-    passed_total = 0
-    cat = defaultdict(lambda: {"n": 0, "ok": 0, "tok": 0})
-    print()
-    for t, model, res in sorted(outs, key=lambda x: x[0]["task_id"]):
-        ok = checkers.check(t, res.content)
-        total_tokens += res.total_tokens
-        passed_total += ok
-        c = cat[t["category"]]
-        c["n"] += 1
-        c["ok"] += ok
-        c["tok"] += res.total_tokens
-        print(f"  {'OK ' if ok else 'FAIL'} {t['task_id']:10s} [{model.split('/')[-1]:24s}] tok={res.total_tokens}")
+    def score_once(verbose):
+        outs = asyncio.run(run_live(tasks, allowed))
+        total_tokens = passed_total = 0
+        cat = defaultdict(lambda: {"n": 0, "ok": 0, "tok": 0})
+        for t, model, res in sorted(outs, key=lambda x: x[0]["task_id"]):
+            ok = checkers.check(t, res.content)
+            total_tokens += res.total_tokens
+            passed_total += ok
+            c = cat[t["category"]]; c["n"] += 1; c["ok"] += ok; c["tok"] += res.total_tokens
+            if verbose:
+                print(f"  {'OK ' if ok else 'FAIL'} {t['task_id']:10s} [{model.split('/')[-1]:24s}] tok={res.total_tokens}")
+        return passed_total, total_tokens, cat
 
-    print(f"\nAccuracy gate: {passed_total}/{len(tasks)} = {passed_total / len(tasks) * 100:.0f}%")
-    print(f"TOTAL TOKENS (leaderboard metric): {total_tokens}")
-    print("\nPer-category:")
-    for c in sorted(cat):
-        s = cat[c]
-        print(f"  {c:12s} acc={s['ok']}/{s['n']}  tokens={s['tok']}  (avg {s['tok'] // s['n']}/task)")
+    n = len(tasks)
+    if args.repeat <= 1:
+        print()
+        passed, toks, cat = score_once(verbose=True)
+        print(f"\nAccuracy gate: {passed}/{n} = {passed / n * 100:.0f}%")
+        print(f"TOTAL TOKENS (leaderboard metric): {toks}")
+        print("\nPer-category:")
+        for c in sorted(cat):
+            s = cat[c]
+            print(f"  {c:12s} acc={s['ok']}/{s['n']}  tokens={s['tok']}  (avg {s['tok'] // s['n']}/task)")
+    else:
+        import statistics as st
+        accs, tks = [], []
+        for i in range(args.repeat):
+            passed, toks, _ = score_once(verbose=False)
+            accs.append(passed / n * 100); tks.append(toks)
+            print(f"  run {i + 1}: acc={passed}/{n} ({accs[-1]:.0f}%)  tokens={toks}")
+        print(f"\nOver {args.repeat} runs (temp-0 non-determinism):")
+        print(f"  accuracy: mean {st.mean(accs):.1f}%  min {min(accs):.0f}%  max {max(accs):.0f}%")
+        print(f"  tokens:   mean {st.mean(tks):.0f}  min {min(tks)}  max {max(tks)}")
 
 
 if __name__ == "__main__":

@@ -79,15 +79,25 @@ def classify(prompt: str) -> str:
     return "factual"
 
 
-def pick_model(category: str, allowed: list[str]) -> str:
-    allowed_list = [m.strip() for m in allowed]
+def model_candidates(category: str, allowed: list[str]) -> list[str]:
+    """Preference-ordered list of allowed models for a category, best first, with
+    every other allowed model appended as a last-resort fallback. The agent tries
+    them in order so one flaky/unavailable model never zeroes out a task."""
+    allowed_list = [m.strip() for m in allowed if m.strip()]
+    ordered: list[str] = []
     for pref in MODEL_PREFS.get(category, []):
-        # exact ID (or exact tail after a provider prefix) first
-        for a in allowed_list:
-            if a == pref or a.endswith("/" + pref):
-                return a
-        # then loose substring as a fallback for renamed variants
-        for a in allowed_list:
-            if pref in a:
-                return a
-    return allowed_list[0]  # fall back to the first allowed model
+        for a in allowed_list:  # exact / tail match first
+            if (a == pref or a.endswith("/" + pref)) and a not in ordered:
+                ordered.append(a)
+        for a in allowed_list:  # then loose substring
+            if pref in a and a not in ordered:
+                ordered.append(a)
+    for a in allowed_list:  # remaining allowed models as final fallbacks
+        if a not in ordered:
+            ordered.append(a)
+    return ordered or allowed_list
+
+
+def pick_model(category: str, allowed: list[str]) -> str:
+    cands = model_candidates(category, allowed)
+    return cands[0] if cands else (allowed[0] if allowed else "")
