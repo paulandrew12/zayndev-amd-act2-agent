@@ -21,7 +21,8 @@ async def solve(client: FireworksClient, allowed: list[str], task: dict, sem: as
             category = classify(prompt)
             model = pick_model(category, allowed)
             messages = build_messages(category, prompt)
-            answer = await client.chat(model=model, messages=messages, max_tokens=max_tokens_for(category))
+            result = await client.chat(model=model, messages=messages, max_tokens=max_tokens_for(category))
+            answer = result.content
         except Exception as e:  # never let one task sink the run
             print(f"[warn] task {task_id} failed: {e}", file=sys.stderr)
             answer = ""

@@ -1,10 +1,23 @@
 """Minimal async client for the Fireworks OpenAI-compatible chat completions API.
 
 ALL calls go through FIREWORKS_BASE_URL (the judging proxy) — never any other host.
+Returns token usage so the eval harness can rank runs by total tokens (the leaderboard metric).
 """
 import asyncio
+from dataclasses import dataclass
 
 import httpx
+
+
+@dataclass
+class ChatResult:
+    content: str
+    prompt_tokens: int = 0
+    completion_tokens: int = 0
+
+    @property
+    def total_tokens(self) -> int:
+        return self.prompt_tokens + self.completion_tokens
 
 
 class FireworksClient:
@@ -22,7 +35,7 @@ class FireworksClient:
     async def __aexit__(self, *exc):
         await self._client.aclose()
 
-    async def chat(self, model: str, messages: list[dict], max_tokens: int, retries: int = 2) -> str:
+    async def chat(self, model: str, messages: list[dict], max_tokens: int, retries: int = 2) -> ChatResult:
         payload = {
             "model": model,
             "messages": messages,
@@ -33,9 +46,16 @@ class FireworksClient:
             try:
                 r = await self._client.post("/chat/completions", json=payload)
                 r.raise_for_status()
-                return r.json()["choices"][0]["message"]["content"].strip()
+                data = r.json()
+                content = data["choices"][0]["message"]["content"].strip()
+                usage = data.get("usage") or {}
+                return ChatResult(
+                    content=content,
+                    prompt_tokens=usage.get("prompt_tokens", 0),
+                    completion_tokens=usage.get("completion_tokens", 0),
+                )
             except (httpx.HTTPStatusError, httpx.TransportError, KeyError):
                 if attempt == retries:
                     raise
                 await asyncio.sleep(1.5 * (attempt + 1))
-        return ""
+        return ChatResult("")
