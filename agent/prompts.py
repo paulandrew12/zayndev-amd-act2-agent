@@ -1,31 +1,38 @@
-"""Per-category prompt builders. Every token here is scored — keep prompts minimal.
+"""Per-category prompt builders. Every token here is scored — keep prompts minimal
+AND suppress the model's chain-of-thought preamble, which wastes tokens and (worse)
+gets truncated before the real answer, failing the accuracy gate.
 
-Rules of thumb:
-- No few-shot examples unless the accuracy gate forces it.
-- Short imperative system lines; the task prompt already carries the details.
-- Cap max_tokens per category so verbose models can't leak tokens.
+Design rules:
+- Terse system line (prompt tokens are scored too).
+- Explicitly forbid restating the question / "thinking out loud".
+- Tight max_tokens per category as a backstop.
+- Keep just enough working on math/logic to preserve accuracy.
 """
 
 _SYSTEM: dict[str, str] = {
-    "factual": "Answer accurately and concisely.",
-    "math": "Solve step by step briefly, then end with: Answer: <result>",
-    "sentiment": "Classify sentiment (positive/negative/neutral) with a one-sentence justification.",
-    "summarise": "Follow the requested format and length exactly.",
-    "ner": "Extract entities with labels (person/org/location/date). Output only the list.",
-    "code_debug": "Identify the bug briefly, then give the corrected code.",
-    "logic": "Reason briefly, then end with: Answer: <result>",
-    "code_gen": "Output only the code with minimal comments.",
+    "factual": "Answer directly in at most 3 sentences. No preamble.",
+    "math": "Reply with at most two short lines of working, then a final line 'Answer: <number>'. Do not restate the question or re-check.",
+    "sentiment": "Reply with exactly one word: positive, negative, or neutral.",
+    "summarise": "Output only the summary in the requested length/format. No preamble.",
+    "ner": "Output only the entities, one per line as 'text - label' (person/org/location/date).",
+    "code_debug": "Reply with one short line naming the bug, then a single ```python block with the fixed code. No reasoning, no extra text.",
+    "logic": "Reply with at most two short lines of reasoning, then a final line 'Answer: <result>'. Do not restate the question.",
+    "code_gen": "Output only a single ```python block with the function. No explanation, no reasoning, before or after.",
 }
 
+# max_tokens is a TRUNCATION BACKSTOP, not a target. Obedient instruct models stop
+# early and cost few tokens regardless of the cap; a generous cap just prevents a
+# verbose model from being cut off mid-answer (which fails the accuracy gate).
+# The token WIN comes from the prompt making the model concise, not from a tight cap.
 _MAX_TOKENS: dict[str, int] = {
-    "factual": 300,
-    "math": 500,
-    "sentiment": 80,
-    "summarise": 300,
+    "factual": 256,
+    "math": 384,
+    "sentiment": 64,
+    "summarise": 256,
     "ner": 200,
-    "code_debug": 700,
-    "logic": 500,
-    "code_gen": 700,
+    "code_debug": 768,
+    "logic": 384,
+    "code_gen": 768,
 }
 
 
