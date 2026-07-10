@@ -1,0 +1,1 @@
+The reference approach most teams will copy sends the raw prompt and lets the model ramble. Its fine tuned router literally ties with always picking the cheap model. The untapped lever is verbosity — and that is the one I pull hardest.

@@ -1,0 +1,32 @@
+  OK  math_02    [minimax-m3              ] tok=178
+  OK  math_03    [minimax-m3              ] tok=180
+  OK  math_04    [minimax-m3              ] tok=180
+  OK  math_05    [minimax-m3              ] tok=195
+  OK  ner_01     [minimax-m3              ] tok=198
+  OK  ner_02     [minimax-m3              ] tok=190
+  OK  ner_03     [minimax-m3              ] tok=201
+  OK  ner_04     [minimax-m3              ] tok=187
+  OK  ner_05     [minimax-m3              ] tok=188
+  OK  sent_01    [minimax-m3              ] tok=149
+  OK  sent_02    [minimax-m3              ] tok=153
+  OK  sent_03    [minimax-m3              ] tok=152
+  OK  sent_04    [minimax-m3              ] tok=151
+  OK  sent_05    [minimax-m3              ] tok=147
+  OK  sum_01     [minimax-m3              ] tok=218
+  OK  sum_02     [minimax-m3              ] tok=196
+  OK  sum_03     [minimax-m3              ] tok=223
+  OK  sum_04     [minimax-m3              ] tok=187
+  OK  sum_05     [minimax-m3              ] tok=185
+
+Accuracy gate: 40/40 = 100%
+TOTAL TOKENS (leaderboard metric): 6791
+
+Per-category:
+  code_debug   acc=5/5  tokens=592  (avg 118/task)
+  code_gen     acc=5/5  tokens=529  (avg 105/task)
+  factual      acc=5/5  tokens=1016  (avg 203/task)
+  logic        acc=5/5  tokens=992  (avg 198/task)
+  math         acc=5/5  tokens=937  (avg 187/task)
+  ner          acc=5/5  tokens=964  (avg 192/task)
+  sentiment    acc=5/5  tokens=752  (avg 150/task)
+  summarise    acc=5/5  tokens=1009  (avg 201/task)

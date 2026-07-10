@@ -1,0 +1,1 @@
+It ships exactly the way the judge runs it. The public image, pulled anonymously, reads tasks dot json and writes valid results dot json every time — eight out of eight. Per task model fallback means one flaky model never sinks the batch.

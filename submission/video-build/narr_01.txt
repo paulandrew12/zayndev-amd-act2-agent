@@ -1,0 +1,1 @@
+Track 1 is a token race. Pass the accuracy gate, then whoever answers on the fewest tokens wins. This is ZaynDev — a general-purpose agent engineered for exactly one number: total tokens. Built solo, from Nairobi.

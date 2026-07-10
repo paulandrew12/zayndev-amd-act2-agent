@@ -1,0 +1,1 @@
+And the per category prompts. This is measured, not guessed — removing these lines drops accuracy and raises total tokens at the same time. Brevity instructions pay for themselves.

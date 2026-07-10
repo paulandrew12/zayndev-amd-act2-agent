@@ -1,0 +1,17 @@
+_NUMWORD = r"(?:one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|dozen|hundred|thousand|half|twice|double)"
+
+_MATH = re.compile(
+    r"\b(?:calculat|how (?:much|many)|percent|per cent|discount|interest|average|mean of|sum of"
+    r"|total|product of|area|perimeter|volume|speed|distance|ratio|divisible|remainder|value of"
+    r"|square|cube|km/h|per (?:hour|day|year|second))\b|%"
+)
+
+_LOGIC = re.compile(
+    r"\ball\s+\w+\s+are\s+\w+"                                   # syllogism
+    r"|\bnecessarily\b"
+    r"|\bwhich\s+(?:box|one|colou?r|person|house|door|cup|hat)\b"
+    r"|\b(?:not in the|is not in|neither|taller than|shorter than|older than|younger than"
+    r"|faster than|to the (?:left|right) of|seated|sits? next to|directly (?:above|below))\b"
+    r"|\bif\b.*\bthen\b"
+    r"|\b(?:constraint|puzzle|deduce|who (?:is|owns|lives|sits)|order of|must be true|logically)\b"
+)

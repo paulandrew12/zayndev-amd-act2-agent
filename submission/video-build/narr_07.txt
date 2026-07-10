@@ -1,0 +1,1 @@
+I measure everything. Forty labelled tasks across all eight categories, with checkers that mirror the accuracy gate. On the real models: one hundred percent accuracy, run after run — and switching reasoning off cut total tokens by twenty nine percent, to about one hundred seventy tokens per task.

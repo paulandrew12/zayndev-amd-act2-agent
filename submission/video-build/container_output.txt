@@ -1,0 +1,11 @@
+$ docker pull ghcr.io/paulandrew12/zayndev-agent:latest
+latest: Pulling from paulandrew12/zayndev-agent
+Status: Downloaded newer image for ghcr.io/paulandrew12/zayndev-agent:latest
+
+$ docker run --rm -v ./tasks.json:/input/tasks.json -v ./out:/output \
+    -e FIREWORKS_API_KEY -e FIREWORKS_BASE_URL -e ALLOWED_MODELS \
+    ghcr.io/paulandrew12/zayndev-agent:latest
+[done] 8/8 answered -> /output/results.json
+
+$ head -c 300 out/results.json
+[{"task_id": "t1", "answer": "TCP (Transmission Control Protocol) is connection-oriented, establishing a reliable session with error-checking, flow control, and guaranteed packet delivery in order, making it ideal for applications like web browsing, email, and file transfers. UDP (User Datagram Prot

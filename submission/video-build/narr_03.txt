@@ -1,0 +1,1 @@
+Left alone, these models think out loud before answering. That preamble wastes tokens on every task — and worse, it gets truncated by the token cap before the real answer arrives, so you fail the gate. Reasoning models are sneakier still: they can burn the entire token budget thinking, and return no answer at all.
