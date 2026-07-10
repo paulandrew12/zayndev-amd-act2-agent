@@ -13,16 +13,19 @@ CATEGORIES = (
 )
 
 # Ordered model preference per category; first match present in ALLOWED_MODELS wins.
-# Tune these against the accuracy gate once we can measure.
+# Serverless models (minimax/kimi) lead everywhere: per the organizers (9 Jul),
+# Gemma is allowed but requires a manual on-demand deployment (~$7/hr even idle,
+# 404 if not deployed) and "you don't need Gemma to pass the gate". Gemma IDs stay
+# as tail fallbacks — if they 404, model_candidates() falls through automatically.
 MODEL_PREFS: dict[str, list[str]] = {
     "code_debug": ["kimi-k2p7-code", "minimax-m3", "gemma-4-31b-it"],
     "code_gen": ["kimi-k2p7-code", "minimax-m3", "gemma-4-31b-it"],
-    "math": ["minimax-m3", "gemma-4-31b-it", "gemma-4-31b-it-nvfp4"],
-    "logic": ["minimax-m3", "gemma-4-31b-it", "gemma-4-31b-it-nvfp4"],
-    "factual": ["gemma-4-31b-it", "gemma-4-31b-it-nvfp4", "minimax-m3"],
-    "summarise": ["gemma-4-26b-a4b-it", "gemma-4-31b-it", "gemma-4-31b-it-nvfp4"],
-    "sentiment": ["gemma-4-26b-a4b-it", "gemma-4-31b-it", "gemma-4-31b-it-nvfp4"],
-    "ner": ["gemma-4-31b-it", "gemma-4-26b-a4b-it", "minimax-m3"],
+    "math": ["minimax-m3", "kimi-k2p7-code", "gemma-4-31b-it"],
+    "logic": ["minimax-m3", "kimi-k2p7-code", "gemma-4-31b-it"],
+    "factual": ["minimax-m3", "kimi-k2p7-code", "gemma-4-31b-it"],
+    "summarise": ["minimax-m3", "kimi-k2p7-code", "gemma-4-26b-a4b-it"],
+    "sentiment": ["minimax-m3", "kimi-k2p7-code", "gemma-4-26b-a4b-it"],
+    "ner": ["minimax-m3", "kimi-k2p7-code", "gemma-4-31b-it"],
 }
 
 _CODE_MARKERS = re.compile(
