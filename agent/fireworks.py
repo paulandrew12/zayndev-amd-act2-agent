@@ -14,7 +14,7 @@ import httpx
 # reasoning_content and return NO content key when it doesn't fit — a silent zero.
 # "low" keeps content present and cheap. If the judging proxy rejects the extra
 # param (400), we strip it and retry, so this can never cost us a task.
-REASONING_EFFORT = os.environ.get("REASONING_EFFORT", "low")
+REASONING_EFFORT = os.environ.get("REASONING_EFFORT", "none")
 
 _THINK_BLOCK = re.compile(r"^\s*<think>.*?</think>\s*", re.DOTALL)
 

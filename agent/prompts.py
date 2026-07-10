@@ -37,6 +37,10 @@ _MAX_TOKENS: dict[str, int] = {
 
 
 def build_messages(category: str, prompt: str) -> list[dict]:
+    # SYSTEM_PROMPT=none: A/B experiment knob — send the bare task prompt only.
+    import os
+    if os.environ.get("SYSTEM_PROMPT") == "none":
+        return [{"role": "user", "content": prompt}]
     return [
         {"role": "system", "content": _SYSTEM[category]},
         {"role": "user", "content": prompt},
