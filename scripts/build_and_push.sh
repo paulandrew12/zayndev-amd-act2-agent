@@ -18,7 +18,9 @@ echo ">> logging in to ghcr.io as ${GH_USER}"
 gh auth token | docker login ghcr.io -u "${GH_USER}" --password-stdin
 
 echo ">> building + pushing ${IMAGE} (linux/amd64)"
-docker buildx build --platform linux/amd64 -t "${IMAGE}" --push .
+docker buildx build --platform linux/amd64 -t "${IMAGE}" \
+  --label "org.opencontainers.image.source=https://github.com/${GH_USER}/zayndev-amd-act2-agent" \
+  --push .
 
 cat <<EOF
 

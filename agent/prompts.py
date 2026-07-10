@@ -27,9 +27,9 @@ _SYSTEM: dict[str, str] = {
 _MAX_TOKENS: dict[str, int] = {
     "factual": 256,
     "math": 384,
-    "sentiment": 64,
-    "summarise": 256,
-    "ner": 200,
+    "sentiment": 160,
+    "summarise": 320,
+    "ner": 256,
     "code_debug": 768,
     "logic": 384,
     "code_gen": 768,
